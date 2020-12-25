@@ -3,7 +3,7 @@ import java.util.*;
 public class BigramIndex{
     Trie trie;
     Map<String,Integer> distinctTokens;
-    Map<String,List> cachedCorrections;
+    Map<String,List<String>> cachedCorrections;
     public BigramIndex(){
         trie=new Trie();
         distinctTokens=new HashMap<>();
@@ -18,8 +18,8 @@ public class BigramIndex{
         if (token.length()<2)
             return;
         String[] bigrams=getBigrams(token);
-        for (int i = 0; i <bigrams.length; i++) {
-            trie.add(bigrams[i],token);
+        for (String bigram : bigrams) {
+            trie.add(bigram, token);
         }
 
     }
@@ -57,7 +57,7 @@ public class BigramIndex{
         }
         int n=10;//top n suggestions
         Set<String> suggestions=getSuggestions(token);
-        List topSuggestions=new ArrayList();
+        List<String> topSuggestions=new ArrayList<>();
 
 
         if (suggestions.size()<2) {
@@ -81,9 +81,7 @@ public class BigramIndex{
 
         int count=0;
         int[] editDistance=new int[n];
-        for (int i = 0; i <editDistance.length ; i++) {
-            editDistance[i]=1000000;
-        }
+        Arrays.fill(editDistance, 1000000);
         int[] usageCount=new int[n];
         String[] tokens=new String[n];
         for (String suggestion : suggestions) {
@@ -118,8 +116,6 @@ public class BigramIndex{
             }
 
         }
-
-
         for (int i = 0; i <count ; i++) {
            topSuggestions.add(tokens[i].substring(1,tokens[i].length()-1));
         }
@@ -133,7 +129,7 @@ public class BigramIndex{
         List<String> top=getTopSuggestions(token);
         if (top.isEmpty())
             return token;
-            else {
+        else {
             String temp=top.get(0);
             if (temp.startsWith("$"))
                 return temp.substring(1,temp.length()-1);
@@ -143,7 +139,7 @@ public class BigramIndex{
     }
     public List<String> getTopQuerySuggestions(String query,int maxSuggestionCount){
         String[] tokens=query.split(" ");
-        HashMap<String,List<String>> table=new HashMap<String,List<String>>();
+        HashMap<String,List<String>> table=new HashMap<>();
 
         for (String token : tokens) {
             if (token.equals("AND") ||token.equals("NOT") ||token.equals("OR"))
