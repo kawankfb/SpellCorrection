@@ -8,7 +8,7 @@ public class Main {
 
         BigramIndex bigramIndex = new BigramIndex();
         try {
-            FileInputStream fis=new FileInputStream("fawiki-1101-pages-articles-multistream.xml");
+            FileInputStream fis=new FileInputStream("fawiki-20201101-pages-articles-multistream.xml");
             Scanner scanner=new Scanner(fis);
             int line_count=0;
 
@@ -35,9 +35,20 @@ public class Main {
 
             System.out.println("کوئری مورد نظر خود را وارد نمایید:");
             String query = scanner.nextLine();
-
-            ;
-            System.out.println(bigramIndex.getTopQuerySuggestions(query).get(0));
+            System.out.println("حداکثر تعداد پیشنهاداتی را که می خواهید به نمایش داده شود ، انتخاب کنید :");
+            scanner=new Scanner(System.in);
+            String count=scanner.nextLine();
+            int suggestionsCount;
+            if (count==null || "".equals(count))
+                suggestionsCount=10;
+            else
+                suggestionsCount=Integer.parseInt(count);
+            if (suggestionsCount<1)
+                suggestionsCount=10;
+            List<String> suggestions=bigramIndex.getTopQuerySuggestions(query,suggestionsCount);
+            for (String suggestion : suggestions) {
+                System.out.println(suggestion);
+            }
 
         }
 

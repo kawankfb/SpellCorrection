@@ -141,44 +141,70 @@ public class BigramIndex{
         }
 
     }
-    public List<String> getTopQuerySuggestions(String query){
-        List<String> topSuggestions=new ArrayList<String>();
+    public List<String> getTopQuerySuggestions(String query,int maxSuggestionCount){
         String[] tokens=query.split(" ");
         HashMap<String,List<String>> table=new HashMap<String,List<String>>();
 
-        int number_of_corrections=0;
         for (String token : tokens) {
             if (token.equals("AND") ||token.equals("NOT") ||token.equals("OR"))
-                continue;
+            {
+                List<String> temp = new ArrayList<>();
+                temp.add(token);
+                table.putIfAbsent(token,temp);
+            }
             else {
                 String corrected_token=getBestSuggestion(token);
-                if (corrected_token.equals(token))
-                    continue;
-
+                if (corrected_token.equals(token)) {
+                    List<String> temp = new ArrayList<>();
+                    temp.add(token);
+                    table.putIfAbsent(token,temp);
+                }
                 else {
                 table.putIfAbsent(token,getTopSuggestions(token));
-                number_of_corrections++;
                 }
             }
         }
 
-        //adding the best  suggestion to the list
-        StringBuilder temp=new StringBuilder();
-        for (String token : tokens) {
-            if (table.get(token)==null) {
-                temp.append(token);
-                temp.append(' ');
+        ArrayList<String> topQuerySuggestions=new ArrayList<>();
+        String[][] permutations=new String[tokens.length][];
+        for (int i = 0; i <permutations.length ; i++) {
+            List<String> tokenSuggestions=table.get(tokens[i]);
+            permutations[i]=new String[tokenSuggestions.size()];
+            int j=0;
+            for (String tokenSuggestion : tokenSuggestions) {
+                permutations[i][j]=tokenSuggestion;
+                j++;
             }
-            else {
-                temp.append(table.get(token).get(0));
-                temp.append(' ');
-            }
-            }
-        String newQuery=temp.substring(0,temp.length()-1);
-        topSuggestions.add(newQuery);
-        //end of best suggestion
+        }
 
-        return  topSuggestions;
+        int length= permutations.length;
+        int[] ints=new int[length];
+        int[] limits=new int[length];
+        for (int i = 0; i <limits.length ; i++) {
+            limits[i]=permutations[i].length-1;
+        }
+        while (ints[0]<=limits[0] && topQuerySuggestions.size()<maxSuggestionCount)
+        {
+            StringBuilder tempSB=new StringBuilder();
+            int turn=0;
+            for (int i : ints) {
+                tempSB.append(permutations[turn][i]);
+                tempSB.append(' ');
+                turn++;
+            }
+            topQuerySuggestions.add(tempSB.toString());
+            ints[length-1]++;
+            for (int i = length-1; i >=0 ; i--) {
+                if (ints[i]>limits[i]) {
+                    if (i==0)
+                        break;
+                    ints[i - 1]++;
+                    ints[i]=0;
+                }
+            }
+        }
+
+        return  topQuerySuggestions;
     }
 
 }
