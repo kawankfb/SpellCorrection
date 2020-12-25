@@ -56,7 +56,7 @@ public class BigramIndex{
             return cachedCorrections.get(token);
         }
         int n=10;//top n suggestions
-        Set<String> suggestions=filter(getSuggestions(token),token);
+        Set<String> suggestions=getSuggestions(token);
         List topSuggestions=new ArrayList();
 
 
@@ -141,39 +141,6 @@ public class BigramIndex{
         }
 
     }
-
-    private Set<String> filter(Set<String> suggestions,String token){
-        return suggestions;
-        /*
-        double sum=0;
-        Set<String> filteredSuggestions=new HashSet<>();
-
-        double[] scores=new double[suggestions.size()];
-        String[] tokens=new String[suggestions.size()];
-        String[] tokenBigrams=getBigrams(token);
-        int count=0;
-        for (String suggestion : suggestions) {
-            int sharedBigramsCount=0;
-            for (String bigram : getBigrams(suggestion)) {
-                for (String tokenBigram : tokenBigrams) {
-                    if (bigram.equals(tokenBigram))
-                        sharedBigramsCount++;
-                }
-            }
-            tokens[count]=suggestion;
-            scores[count]=sharedBigramsCount/(double)(suggestion.length()+token.length());
-            sum=sum+scores[count];
-            count++;
-        }
-        sum=sum/count;
-        System.out.println("sum is :"+sum);
-        for (int i = 0; i <scores.length ; i++) {
-            if (scores[i]>sum)
-                filteredSuggestions.add(tokens[i]);
-        }
-
-        return filteredSuggestions;*/
-    }
     public List<String> getTopQuerySuggestions(String query){
         List<String> topSuggestions=new ArrayList<String>();
         String[] tokens=query.split(" ");
@@ -210,50 +177,6 @@ public class BigramIndex{
         String newQuery=temp.substring(0,temp.length()-1);
         topSuggestions.add(newQuery);
         //end of best suggestion
-
-        //creating 9 extra suggestions to have 10 overall suggestions
-        /*
-        int[] correction_index=new int[number_of_corrections];
-        for (int i = 0; i <9 ; i++) {
-            boolean all_permutations_explored=false;
-            int corrected_token_index=0;
-            temp=new StringBuilder();
-            for (String token : tokens) {
-                if (table.get(token)==null) {
-                    temp.append(token);
-                    temp.append(' ');
-                }
-                else {
-
-                    temp.append(table.get(token).get(correction_index[corrected_token_index]));
-                    correction_index[corrected_token_index]++;
-                    if (table.get(token).size()==correction_index[corrected_token_index])
-                    {if (corrected_token_index==0)
-                    all_permutations_explored=true;
-                    else {
-                        correction_index[corrected_token_index]=0;
-                        correction_index[corrected_token_index-1]++;
-                    }
-
-
-
-                    }
-
-                    corrected_token_index++;
-                    temp.append(' ');
-                }
-            }
-
-            newQuery=temp.substring(0,temp.length()-1);
-            topSuggestions.add(newQuery);
-            if (all_permutations_explored)
-                break;
-
-        }
-        for (String topSuggestion : topSuggestions) {
-            System.out.println(topSuggestion);
-        }
-        */
 
         return  topSuggestions;
     }

@@ -1,33 +1,4 @@
 public class CharacterNormalizer {
-    /*
-    public static void main(String[] args) {
-        for (int i = 48; i <58 ; i++) {
-            System.out.println(i+" "+(normalize((char)i)));
-        }
-        //Capital Letters and @
-        for (int i = 64; i <91 ; i++) {
-            System.out.println(i+" "+(normalize((char)i)));
-        }
-        //letters
-        for (int i = 97; i <123 ; i++) {
-            System.out.println(i+" "+(normalize((char)i)));
-        }
-        //arabic letters and sign
-        for (int i = 1568; i <1618 ; i++) {
-            System.out.println(i+" "+(normalize((char)i)));
-        }
-        //farsi numbers
-        for (int i = 1632; i <1642 ; i++) {
-            System.out.println(i+" "+(normalize((char)i)));
-        }
-        for (int i = 1646; i <1750 ; i++) {
-            System.out.println(i+" "+(normalize((char)i)));
-        }
-
-        for (int i = 1774; i <1792 ; i++) {
-            System.out.println(i+" "+(normalize((char)i)));
-        }
-    }*/
     public static String normalizeString(String string){
         StringBuilder temp=new StringBuilder();
         char tempChar;
